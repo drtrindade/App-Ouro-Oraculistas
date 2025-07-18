@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ouro Oracular - Dashboard</title>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="assets/logo.png">
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <div class="logo-container">
+                <img src="assets/logo.png" alt="Ouro Oracular" class="logo">
+            </div>
+            
+            <div class="user-info">
+                <span>Bem-vindo, <span id="userName"></span>!</span>
+                <button id="logoutBtn" class="btn-login">Sair</button>
+            </div>
+        </header>
+        
+        <main>
+            <h2>Apps Disponíveis</h2>
+            <div id="appsGrid" class="app-grid">
+                <!-- Os apps serão carregados dinamicamente aqui -->
+            </div>
+            
+            <div id="iframeContainer" class="iframe-container" style="display: none;">
+                <!-- Aqui os apps serão carregados em iframes -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <!-- Nossos scripts -->
+    <script src="js/firebase.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

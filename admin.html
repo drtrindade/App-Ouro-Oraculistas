@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <!-- Mesmo head do index.html -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="assets/logo.png" alt="Ouro Oracular" class="logo">
+            <h1>Painel de Administração</h1>
+        </header>
+        
+        <nav class="admin-nav">
+            <button id="manageOraculists">Gerenciar Oraculistas</button>
+            <button id="manageApps">Gerenciar Apps</button>
+            <button id="viewLogs">Ver Logs de Acesso</button>
+            <button id="logout">Sair</button>
+        </nav>
+        
+        <div class="admin-panel" id="oraculistsPanel">
+            <h2>Gerenciar Oraculistas</h2>
+            <button id="addOraculist">Adicionar Oraculista</button>
+            
+            <div class="oraculist-list" id="oraculistList">
+                <!-- Lista de oraculistas será carregada aqui -->
+            </div>
+        </div>
+        
+        <div class="admin-panel" id="appsPanel" style="display:none;">
+            <h2>Gerenciar Apps</h2>
+            <button id="addApp">Adicionar App</button>
+            
+            <div class="app-list" id="appList">
+                <!-- Lista de apps será carregada aqui -->
+            </div>
+        </div>
+        
+        <div class="admin-panel" id="logsPanel" style="display:none;">
+            <h2>Logs de Acesso</h2>
+            <div class="logs-container" id="logsContainer">
+                <!-- Logs serão carregados aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar/editar oraculistas -->
+    <div class="modal" id="oraculistModal">
+        <!-- Conteúdo do modal -->
+    </div>
+    
+    <!-- Modal para adicionar/editar apps -->
+    <div class="modal" id="appModal">
+        <!-- Conteúdo do modal -->
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
