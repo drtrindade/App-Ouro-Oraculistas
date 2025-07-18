@@ -1,58 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <!-- Mesmo head do index.html -->
-</head>
-<body>
-    <div class="container">
-        <header>
-            <img src="assets/logo.png" alt="Ouro Oracular" class="logo">
-            <h1>Painel de Administração</h1>
-        </header>
-        
-        <nav class="admin-nav">
-            <button id="manageOraculists">Gerenciar Oraculistas</button>
-            <button id="manageApps">Gerenciar Apps</button>
-            <button id="viewLogs">Ver Logs de Acesso</button>
-            <button id="logout">Sair</button>
-        </nav>
-        
-        <div class="admin-panel" id="oraculistsPanel">
-            <h2>Gerenciar Oraculistas</h2>
-            <button id="addOraculist">Adicionar Oraculista</button>
-            
-            <div class="oraculist-list" id="oraculistList">
-                <!-- Lista de oraculistas será carregada aqui -->
-            </div>
-        </div>
-        
-        <div class="admin-panel" id="appsPanel" style="display:none;">
-            <h2>Gerenciar Apps</h2>
-            <button id="addApp">Adicionar App</button>
-            
-            <div class="app-list" id="appList">
-                <!-- Lista de apps será carregada aqui -->
-            </div>
-        </div>
-        
-        <div class="admin-panel" id="logsPanel" style="display:none;">
-            <h2>Logs de Acesso</h2>
-            <div class="logs-container" id="logsContainer">
-                <!-- Logs serão carregados aqui -->
-            </div>
-        </div>
-    </div>
+// admin.js - Gerenciamento de usuários e apps
+document.addEventListener('DOMContentLoaded', () => {
+  if (!isAdmin()) {
+    window.location.href = 'index.html';
+    return;
+  }
 
-    <!-- Modal para adicionar/editar oraculistas -->
-    <div class="modal" id="oraculistModal">
-        <!-- Conteúdo do modal -->
-    </div>
+  // Carrega lista de usuários
+  renderUsers();
+  renderApps();
+
+  document.getElementById('addUserForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = document.getElementById('newUsername').value;
+    const password = document.getElementById('newPassword').value;
     
-    <!-- Modal para adicionar/editar apps -->
-    <div class="modal" id="appModal">
-        <!-- Conteúdo do modal -->
-    </div>
+    if (users[username]) {
+      alert('Usuário já existe!');
+      return;
+    }
+    
+    users[username] = { password, role: 'oraculista' };
+    localStorage.setItem('oraculistas_users', JSON.stringify(users));
+    renderUsers();
+  });
+});
 
-    <script src="js/admin.js"></script>
-</body>
-</html>
+function renderUsers() {
+  const userList = document.getElementById('userList');
+  userList.innerHTML = Object.keys(users).map(user => `
+    <div class="user-item">
+      <span>${user} (${users[user].role})</span>
+      <button onclick="deleteUser('${user}')">Excluir</button>
+    </div>
+  `).join('');
+}
+
+function deleteUser(username) {
+  if (username === 'admin') {
+    alert('Não é possível excluir o admin!');
+    return;
+  }
+  delete users[username];
+  localStorage.setItem('oraculistas_users', JSON.stringify(users));
+  renderUsers();
+}
