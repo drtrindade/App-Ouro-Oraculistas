@@ -695,41 +695,64 @@
         const modalAppTitle = document.getElementById('modalAppTitle');
         
         // Funções
-        function handleLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
+         function handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        
+        if (users[username] && users[username].password === password) {
+            // Login bem-sucedido
+            const currentUser = {
+                username,
+                name: users[username].name || username,
+                role: users[username].role
+            };
             
-            if (users[username] && users[username].password === password) {
-                // Login bem-sucedido
-                const currentUser = {
-                    username,
-                    name: users[username].name || username,
-                    role: users[username].role
-                };
-                
-                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // Atualizar UI
-                userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
-                userName.textContent = currentUser.name;
-                
-                // Mostrar aplicação
-                loginPage.style.display = 'none';
-                appContainer.style.display = 'grid';
-                
-                // Carregar dados
-                renderFeaturedApps();
-                renderAllApps();
-                renderUsersTable();
-                renderAppsTable();
-                
-                // Navegar para dashboard
-                navigateToPage('dashboard');
-            } else {
-                alert('Credenciais inválidas!');
-            }
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Atualizar UI
+            userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            userName.textContent = currentUser.name;
+            
+            // Mostrar aplicação
+            loginPage.style.display = 'none';
+            appContainer.style.display = 'grid';
+            
+            // Ajustar menu conforme tipo de usuário
+            adjustMenuForUserType(currentUser.role);
+            
+            // Carregar dados
+            renderFeaturedApps();
+            renderAllApps();
+            renderUsersTable();
+            renderAppsTable();
+            
+            // Navegar para dashboard
+            navigateToPage('dashboard');
+        } else {
+            alert('Credenciais inválidas!');
         }
+    }
+
+    // Função nova para ajustar o menu conforme o tipo de usuário
+    function adjustMenuForUserType(userType) {
+        const adminSections = document.querySelectorAll('.nav-title:last-child, .nav-item[data-page^="manage-"]');
+        
+        if (userType === 'oraculista') {
+            // Esconder seções de administração para oraculistas
+            adminSections.forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Garantir que está na página de apps
+            navigateToPage('apps');
+        } else {
+            // Mostrar seções para admin
+            adminSections.forEach(section => {
+                section.style.display = 'flex'; // ou 'block' conforme o elemento
+            });
+        }
+    }
         
         function handleLogout() {
             sessionStorage.removeItem('currentUser');
@@ -915,34 +938,12 @@
         }
         
         function navigateToPage(pageId) {
-            // Esconder todas as páginas
-            Object.values(pageContents).forEach(page => {
-                if (page) page.style.display = 'none';
-            });
-            
-            // Mostrar a página selecionada
-            if (pageContents[pageId]) {
-                pageContents[pageId].style.display = 'block';
-            }
-            
-            // Atualizar navegação ativa
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.dataset.page === pageId) {
-                    item.classList.add('active');
-                }
-            });
-            
-            // Carregar dados se necessário
-            if (pageId === 'dashboard') {
-                renderFeaturedApps();
-            } else if (pageId === 'apps') {
-                renderAllApps();
-            } else if (pageId === 'manage-users') {
-                renderUsersTable();
-            } else if (pageId === 'manage-apps') {
-                renderAppsTable();
-            }
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+        
+        // Bloquear acesso a páginas de admin para oraculistas
+        if (currentUser && currentUser.role === 'oraculista' && pageId.startsWith('manage-')) {
+            alert('Acesso restrito a administradores!');
+            return;
         }
         
         // Event Listeners
