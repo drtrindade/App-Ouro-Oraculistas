@@ -1,21 +1,425 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Oraculistas Ouro Oracular - Login</title>
-  <link rel="stylesheet" href="css/auth.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oraculistas Ouro Oracular</title>
+    <!-- Fontes modernas -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8B5A2B; /* Marrom dourado */
+            --secondary: #D4AF37; /* Ouro */
+            --dark: #3E2723; /* Marrom escuro */
+            --light: #F5F5F5;
+            --success: #4CAF50;
+            --error: #F44336;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--light) 0%, #EDE7DC 100%);
+        }
+        
+        .auth-decoration {
+            display: none;
+            background: url('assets/auth-bg.jpg') center/cover;
+            position: relative;
+        }
+        
+        .auth-decoration::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(62, 39, 35, 0.7);
+        }
+        
+        .auth-form {
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .auth-title {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .auth-subtitle {
+            color: var(--dark);
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.2);
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark);
+            transform: translateY(-2px);
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 1rem;
+            display: none;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-weight: bold;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .app-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .app-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .app-icon {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+        
+        .app-body {
+            padding: 0;
+            height: 400px;
+        }
+        
+        .app-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Responsividade */
+        @media (min-width: 768px) {
+            .auth-container {
+                flex-direction: row;
+            }
+            
+            .auth-decoration {
+                display: block;
+                width: 40%;
+            }
+            
+            .auth-form {
+                width: 60%;
+                padding: 3rem;
+            }
+            
+            .sidebar {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .sidebar.active {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                z-index: 1000;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <img src="assets/logo.png" alt="Oraculistas Ouro Oracular" class="logo">
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Usuário" required>
-      <input type="password" id="password" placeholder="Senha" required>
-      <button type="submit">Acessar</button>
-    </form>
-    <div id="loginError" class="error-message"></div>
-  </div>
-  <script src="js/auth.js"></script>
+    <!-- Página de Login -->
+    <div class="auth-container" id="loginPage">
+        <div class="auth-decoration"></div>
+        <div class="auth-form">
+            <div class="logo-container">
+                <img src="assets/logo.png" alt="Oraculistas Ouro Oracular" class="logo">
+                <h1 class="auth-title">Acesso Exclusivo</h1>
+                <p class="auth-subtitle">Sistema de Oraculistas Ouro Oracular</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="username" placeholder="Usuário" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="password" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Acesso restrito a oraculistas autorizados</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard (hidden inicialmente) -->
+    <div class="dashboard" id="dashboard" style="display: none;">
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="assets/logo-white.png" alt="Logo" class="logo">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <!-- Menu de navegação -->
+            </nav>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="user-menu">
+                    <div class="avatar" id="userAvatar">OO</div>
+                    <button id="logoutBtn">Sair</button>
+                </div>
+            </div>
+            
+            <div class="apps-grid" id="appsGrid">
+                <!-- Apps serão carregados aqui -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sistema de Autenticação Simples (para protótipo)
+        const users = {
+            admin: { password: 'admin123', role: 'admin', name: 'Administrador' },
+            oraculista1: { password: 'oraculo123', role: 'oraculista', name: 'Oraculista 1' }
+        };
+        
+        const apps = [
+            { 
+                id: 'mapa-numerologico', 
+                name: 'Mapa Numerológico', 
+                url: 'https://drtrindade.github.io/Mapa-Numerologico/',
+                icon: 'fas fa-chart-pie'
+            }
+        ];
+        
+        // Elementos DOM
+        const loginPage = document.getElementById('loginPage');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const appsGrid = document.getElementById('appsGrid');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        
+        // Event Listeners
+        loginForm.addEventListener('submit', handleLogin);
+        menuToggle.addEventListener('click', toggleSidebar);
+        logoutBtn.addEventListener('click', handleLogout);
+        
+        // Funções
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (users[username] && users[username].password === password) {
+                // Login bem-sucedido
+                sessionStorage.setItem('currentUser', JSON.stringify({
+                    username,
+                    name: users[username].name,
+                    role: users[username].role
+                }));
+                
+                showDashboard();
+                renderApps();
+            } else {
+                alert('Credenciais inválidas!');
+            }
+        }
+        
+        function showDashboard() {
+            loginPage.style.display = 'none';
+            dashboard.style.display = 'flex';
+            
+            // Atualizar informações do usuário
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (user) {
+                userAvatar.textContent = user.name.charAt(0);
+            }
+        }
+        
+        function renderApps() {
+            appsGrid.innerHTML = apps.map(app => `
+                <div class="app-card">
+                    <div class="app-header">
+                        <h3>${app.name}</h3>
+                        <i class="${app.icon} app-icon"></i>
+                    </div>
+                    <div class="app-body">
+                        <iframe class="app-iframe" src="${app.url}" loading="lazy"></iframe>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
+        }
+        
+        function handleLogout() {
+            sessionStorage.removeItem('currentUser');
+            dashboard.style.display = 'none';
+            loginPage.style.display = 'flex';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        // Verificar se já está logado ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('currentUser')) {
+                showDashboard();
+                renderApps();
+            }
+        });
+    </script>
 </body>
 </html>
