@@ -4,33 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ouro Oracular - Dashboard</title>
-    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@400;700&display=swap">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="assets/logo.png">
+    <style>
+        :root {
+            --primary-color: #5d3a5d;
+            --secondary-color: #8e6c88;
+            --light-color: #f8f3f8;
+            --text-color: #333;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .logo {
+            height: 60px;
+            width: auto;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn-logout {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .apps-title {
+            font-family: 'Libre Baskerville', serif;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+        
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .app-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .app-icon {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .app-info {
+            padding: 15px;
+        }
+        
+        .app-name {
+            font-family: 'Libre Baskerville', serif;
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+        }
+        
+        .iframe-container {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        
+        .btn-back {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <div class="dashboard">
+    <div class="dashboard-container">
         <header class="header">
-            <div class="logo-container">
-                <img src="assets/logo.png" alt="Ouro Oracular" class="logo">
-            </div>
-            
+            <img src="assets/logo.png" alt="Ouro Oracular" class="logo">
             <div class="user-info">
-                <span>Bem-vindo, <span id="userName"></span>!</span>
-                <button id="logoutBtn" class="btn-login">Sair</button>
+                <span>Bem-vindo, <strong id="userName"></strong></span>
+                <button id="logoutBtn" class="btn-logout">Sair</button>
             </div>
         </header>
         
-        <main>
-            <h2>Apps Disponíveis</h2>
-            <div id="appsGrid" class="app-grid">
-                <!-- Os apps serão carregados dinamicamente aqui -->
-            </div>
-            
-            <div id="iframeContainer" class="iframe-container" style="display: none;">
-                <!-- Aqui os apps serão carregados em iframes -->
-            </div>
-        </main>
+        <h1 class="apps-title">Oraculos Disponíveis</h1>
+        
+        <div id="appsGrid" class="apps-grid">
+            <!-- Apps serão carregados aqui dinamicamente -->
+        </div>
+        
+        <div id="iframeContainer" class="iframe-container">
+            <!-- Conteúdo do app será carregado aqui -->
+            <a id="backBtn" class="btn-back">Voltar para os Oraculos</a>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
@@ -39,6 +168,94 @@
     
     <!-- Nossos scripts -->
     <script src="js/firebase.js"></script>
-    <script src="js/dashboard.js"></script>
+    <script>
+        // dashboard.js atualizado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            const currentUser = JSON.parse(localStorage.getItem('ouroOracularCurrentUser'));
+            
+            if (!currentUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Mostrar nome do usuário
+            document.getElementById('userName').textContent = currentUser.username;
+            
+            // Carregar apps
+            loadApps();
+            
+            // Configurar logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (typeof logAccess === 'function') {
+                    logAccess(currentUser.username, 'logout');
+                }
+                localStorage.removeItem('ouroOracularCurrentUser');
+                window.location.href = 'index.html';
+            });
+            
+            // Botão voltar
+            document.getElementById('backBtn').addEventListener('click', function() {
+                document.getElementById('iframeContainer').style.display = 'none';
+                document.getElementById('appsGrid').style.display = 'grid';
+            });
+        });
+
+        function loadApps() {
+            const apps = JSON.parse(localStorage.getItem('ouroOracularApps')) || [
+                {
+                    id: 'mapa-numerologico',
+                    name: 'Mapa Numerológico',
+                    url: 'https://drtrindade.github.io/Mapa-Numerologico/',
+                    icon: 'https://via.placeholder.com/300x120?text=Mapa+Numerológico'
+                }
+            ];
+            
+            const appsContainer = document.getElementById('appsGrid');
+            
+            appsContainer.innerHTML = '';
+            
+            apps.forEach(app => {
+                const appCard = document.createElement('div');
+                appCard.className = 'app-card';
+                appCard.innerHTML = `
+                    <img src="${app.icon || 'https://via.placeholder.com/300x120?text=Oraculo'}" alt="${app.name}" class="app-icon">
+                    <div class="app-info">
+                        <h3 class="app-name">${app.name}</h3>
+                        <p>Clique para acessar</p>
+                    </div>
+                `;
+                
+                appCard.addEventListener('click', function() {
+                    openApp(app);
+                });
+                
+                appsContainer.appendChild(appCard);
+            });
+        }
+
+        function openApp(app) {
+            const currentUser = JSON.parse(localStorage.getItem('ouroOracularCurrentUser'));
+            
+            if (typeof logAppAccess === 'function') {
+                logAppAccess(currentUser.username, app.name);
+            }
+            
+            const iframeContainer = document.getElementById('iframeContainer');
+            iframeContainer.innerHTML = `
+                <iframe src="${app.url}" class="app-iframe"></iframe>
+                <a id="backBtn" class="btn-back">Voltar para os Oraculos</a>
+            `;
+            
+            iframeContainer.style.display = 'block';
+            document.getElementById('appsGrid').style.display = 'none';
+            
+            // Reatachar o evento ao novo botão
+            document.getElementById('backBtn').addEventListener('click', function() {
+                iframeContainer.style.display = 'none';
+                document.getElementById('appsGrid').style.display = 'grid';
+            });
+        }
+    </script>
 </body>
 </html>
