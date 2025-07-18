@@ -1,76 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <!-- Adicione no head -->
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-
-<script>
-  // Configuração do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyC7HcQj8GrWnZBrpsaWKCv8PcJhJarmBo0",
-
-    authDomain: "app-ouro.firebaseapp.com",
-
-    projectId: "app-ouro",
-
-    storageBucket: "app-ouro.firebasestorage.app",
-
-    messagingSenderId: "310800866498",
-
-    appId: "1:310800866498:web:a3855cf9cd91442e192f5b"
-
-  };
-
-  // Inicialize o Firebase
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const auth = firebase.auth();
-
-  // Modifique as funções para usar Firestore
-  async function addNewUser(e) {
-    e.preventDefault();
-    const username = document.getElementById('newUsername').value.trim();
-    const password = document.getElementById('newPassword').value.trim();
-    const role = document.getElementById('userRole').value;
-
-    try {
-      // Cria usuário no Authentication
-      const { user } = await auth.createUserWithEmailAndPassword(`${username}@oraculistas.com`, password);
-      
-      // Salva dados no Firestore
-      await db.collection('users').doc(username).set({
-        name: username,
-        role: role
-      });
-      
-      alert('Usuário criado com sucesso!');
-      addUserForm.reset();
-      renderUsersTable();
-    } catch (error) {
-      alert('Erro ao criar usuário: ' + error.message);
-    }
-  }
-
-  async function renderUsersTable() {
-    const snapshot = await db.collection('users').get();
-    usersTable.innerHTML = snapshot.docs.map(doc => {
-      const user = doc.data();
-      return `
-        <tr>
-          <td>${doc.id}</td>
-          <td>${user.role}</td>
-          <td class="action-btns">
-            <button class="btn btn-danger" onclick="deleteUser('${doc.id}')">
-              <i class="fas fa-trash"></i> Excluir
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join('');
-  }
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oraculistas Ouro Oracular</title>
@@ -717,10 +647,10 @@
                 role: 'admin', 
                 name: 'Administrador' 
             },
-            oraculista: {
-                password: 'oraculo123',
+            lu: {
+                password: 'lu123',
                 role: 'oraculista',
-                name: 'Oraculista Teste'
+                name: 'Oraculista'
             }
         };
         
@@ -731,6 +661,14 @@
                 url: 'https://drtrindade.github.io/Mapa-Numerologico/',
                 icon: 'fas fa-chart-pie',
                 description: 'Mapa completo de numerologia pessoal',
+                featured: true
+            },
+            {
+                id: 'gerador-de-links',
+                name: 'Gerador de Links Jitsi', 
+                url: 'https://drtrindade.github.io/Gerador-de-Links/',
+                icon: 'fas fa-chart-pie',
+                description: 'Gera links para chamada de vídeo',
                 featured: true
             }
         ];
