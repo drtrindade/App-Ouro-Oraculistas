@@ -1,0 +1,51 @@
+{
+  "users": {
+    "admin": {
+      "password": "admin123",
+      "role": "admin",
+      "name": "Administrador",
+      "allowedApps": ["all"]
+    },
+    "lu": {
+      "password": "lu123",
+      "role": "oraculista",
+      "name": "Luciana Bicharada",
+      "allowedApps": ["all"]
+    },
+    "flavia": {
+      "password": "flavia123",
+      "role": "oraculista",
+      "name": "Flavia - Hera",
+      "allowedApps": ["all"]
+    }
+  },
+  "marcelo": {
+      "password": "marcelo123",
+      "role": "oraculista",
+      "name": "Marcelo - Eros",
+      "allowedApps": ["all"]
+    }
+  },
+"pedro": {
+      "password": "pedro123",
+      "role": "oraculista",
+      "name": "Pedro - Tupã",
+      "allowedApps": ["all"]
+    }
+  },
+  "apps": [
+    {
+      "id": "mapa-numerologico",
+      "name": "Mapa Numerológico",
+      "url": "https://drtrindade.github.io/Mapa-Numerologico/",
+      "icon": "fas fa-chart-pie"
+    },
+    {
+      "id": "jitsi",
+      "name": "Gerador de Links Jitsi",
+      "url": "https://drtrindade.github.io/Gerador-de-links-Ouro/",
+      "icon": "fas fa-cards"
+    
+    }
+  ]
+}
