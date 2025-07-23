@@ -1,46 +1,47 @@
-// admin.js - Gerenciamento de usuários e apps
-document.addEventListener('DOMContentLoaded', () => {
-  if (!isAdmin()) {
-    window.location.href = 'index.html';
-    return;
-  }
-
-  // Carrega lista de usuários
-  renderUsers();
-  renderApps();
-
-  document.getElementById('addUserForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('newUsername').value;
-    const password = document.getElementById('newPassword').value;
-    
-    if (users[username]) {
-      alert('Usuário já existe!');
-      return;
-    }
-    
-    users[username] = { password, role: 'oraculista' };
-    localStorage.setItem('oraculistas_users', JSON.stringify(users));
-    renderUsers();
-  });
-});
-
-function renderUsers() {
-  const userList = document.getElementById('userList');
-  userList.innerHTML = Object.keys(users).map(user => `
-    <div class="user-item">
-      <span>${user} (${users[user].role})</span>
-      <button onclick="deleteUser('${user}')">Excluir</button>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Oraculistas Ouro Oracular</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos completos do admin */
+        /* Adicione seus estilos aqui */
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Painel Administrativo</h1>
+        
+        <section>
+            <h2>Gerenciar Usuários</h2>
+            <!-- Formulário para adicionar usuários -->
+        </section>
+        
+        <section>
+            <h2>Gerenciar Apps</h2>
+            <!-- Lista de apps -->
+        </section>
+        
+        <button id="logoutBtn">Sair</button>
     </div>
-  `).join('');
-}
 
-function deleteUser(username) {
-  if (username === 'admin') {
-    alert('Não é possível excluir o admin!');
-    return;
-  }
-  delete users[username];
-  localStorage.setItem('oraculistas_users', JSON.stringify(users));
-  renderUsers();
-}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!user || user.role !== 'admin') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Implemente as funções administrativas aqui
+            
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                sessionStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
