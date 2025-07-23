@@ -641,7 +641,7 @@
     
     <script>
         // Dados iniciais (simulando banco de dados)
-        let users = JSON.parse(localStorage.getItem('oraculistas_users')) || {
+        let users = {
             admin: { 
                 password: 'admin123', 
                 role: 'admin', 
@@ -674,7 +674,7 @@
             }
         };
         
-        let apps = JSON.parse(localStorage.getItem('oraculistas_apps')) || [
+        let apps = [
             { 
                 id: 'mapa-numerologico',
                 name: 'Mapa Numerológico', 
@@ -684,6 +684,9 @@
                 featured: true
             }
         ];
+        
+        localStorage.setItem('oraculistas_users', JSON.stringify(users));
+localStorage.setItem('oraculistas_apps', JSON.stringify(apps));
         
         // Elementos DOM
         const loginPage = document.getElementById('loginPage');
